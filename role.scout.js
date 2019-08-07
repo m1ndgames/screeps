@@ -13,7 +13,6 @@ var roleScout = {
                     
                     creep.memory.scouting = roomname;
                     creeproom.memory.scouting[roomname] = true;
-                    return;
                 }
             }
             

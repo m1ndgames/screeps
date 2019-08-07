@@ -1,6 +1,6 @@
 var spawnWorkers = {
-    run: function() {
-        for(var room_id in Game.rooms) {
+    run: function () {
+        for (var room_id in Game.rooms) {
             var room = Game.rooms[room_id];
             if ((room.controller) && (room.controller.my)) {
                 var level = room.controller.level;
@@ -18,7 +18,7 @@ var spawnWorkers = {
                 var fillers = _.filter(Game.creeps, (creep) => creep.memory.role == 'filler');
                 var scouts = _.filter(Game.creeps, (creep) => creep.memory.role == 'scout');
                 var claimers = _.filter(Game.creeps, (creep) => creep.memory.role == 'claimer');
-            
+
                 builderscount = 0
                 // Spawn builders if needed
                 for (var room_id in Game.rooms) {
@@ -31,7 +31,7 @@ var spawnWorkers = {
                         }
                     }
                 }
-                            
+
                 // Count External Sources in Memory
                 var externalsourcecount = 0;
                 for (var scoutroom in room.memory.scouting) {
@@ -51,20 +51,20 @@ var spawnWorkers = {
                 var extminerscount = (externalsourcecount * 3);
 
                 var fillerscount = 2;
-                var harvesterscount = 3;            
+                var harvesterscount = 3;
                 var guardscount = 0;
                 var healerscount = (guardscount / 2);
-                var upgraderscount = 2; 
+                var upgraderscount = 2;
 
                 var scoutscount = 0;
-                for(var scoutroom in room.memory.scouting) {
+                for (var scoutroom in room.memory.scouting) {
                     if (room.memory.scouting.hasOwnProperty(scoutroom)) {
                         scoutscount++;
                     }
                 }
 
 
-            
+
                 if (energyminers.length < 2) {
                     var energyminerscount = 2;
                     var harvesterscount = 2;
@@ -96,7 +96,7 @@ var spawnWorkers = {
                 // Count Sources in Room
                 var sourcecount = room.find(FIND_SOURCES).length;
                 var energyminerscount = sourcecount;
-    
+
                 // Count Extensions in Room
                 var extensioncount = room.find(FIND_MY_STRUCTURES, {
                     filter: (structure) => {
@@ -104,7 +104,7 @@ var spawnWorkers = {
                             structure.structureType == STRUCTURE_EXTENSION);
                     }
                 }).length;
-    
+
                 // Define Repairmen
                 var towers = room.find(FIND_MY_STRUCTURES, {
                     filter: (structure) => {
@@ -112,7 +112,7 @@ var spawnWorkers = {
                             structure.structureType == STRUCTURE_TOWER);
                     }
                 });
-                
+
                 if (towers.length > 0) {
                     var repaircount = 0;
                     var towersuppliercount = 2;
@@ -132,7 +132,7 @@ var spawnWorkers = {
                 var haulerscount = energyminerscount;
 
                 if (level < 3) {
-                    var harvesterscount = 2;            
+                    var harvesterscount = 2;
                     var guardscount = 0;
                     var healerscount = 0;
                     var upgraderscount = 5;
@@ -143,12 +143,14 @@ var spawnWorkers = {
                     var towersuppliercount = 0;
                     var fillerscount = 0;
                 }
-            
-                var spawns = room.find(FIND_MY_SPAWNS);
+
+
+                var spawns = Game.spawns;
+
                 for (var spawn in spawns) {
 
-    
-                /*    console.log("################################################");
+                    /*
+                    console.log("################################################");
                     console.log("Spawnlist for room " + room.name);
                     console.log("Harvesters = " + harvesters.length + "/" + harvesterscount);
                     console.log("Guards = " + guards.length + "/" + guardscount);
@@ -164,98 +166,123 @@ var spawnWorkers = {
                     console.log("Scouts = " + scouts.length + "/" + scoutscount);
                     console.log("################################################");
                     console.log();
-           */
+                    */
 
-                    if (harvesters.length < harvesterscount && spawns[spawn].room.energyAvailable > 500) {
-                        var newName = spawns[spawn].createCreep([WORK,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE], null, {role: 'harvester', startroom: spawns[spawn].room.name});
-                        return;
-                    } else if (harvesters.length < harvesterscount && spawns[spawn].room.energyAvailable > 200) {
-                        var newName = spawns[spawn].createCreep([WORK,CARRY,MOVE], null, {role: 'harvester', startroom: spawns[spawn].room.name});
-                        return;
-                    }   
 
-                    if (extminers.length < extminerscount && spawns[spawn].room.energyAvailable > 1000) {
-                        var newName = spawns[spawn].createCreep([WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE], null, {role: 'extminer', startroom: spawns[spawn].room.name});
+                    if (harvesters.length < harvesterscount && spawns[spawn].room.energyAvailable > 500 && !spawns[spawn].spawning) {
+                        var newName = spawns[spawn].createCreep([WORK, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE], null, { role: 'harvester', startroom: spawns[spawn].room.name });
+                        console.log(spawns[spawn].name + " is spawning harvester")
                         return;
-                    } else if (extminers.length < extminerscount && spawns[spawn].room.energyAvailable > 500) {
-                        var newName = spawns[spawn].createCreep([MOVE,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY], null, {role: 'extminer', startroom: spawns[spawn].room.name});
+                    } else if (harvesters.length < harvesterscount && spawns[spawn].room.energyAvailable > 200 && !spawns[spawn].spawning) {
+                        var newName = spawns[spawn].createCreep([WORK, CARRY, MOVE], null, { role: 'harvester', startroom: spawns[spawn].room.name });
+                        console.log(spawns[spawn].name + " is spawning harvester")
                         return;
                     }
 
-                    if (energyminers.length < energyminerscount && spawns[spawn].room.energyAvailable > 550) {
-                        var newName = spawns[spawn].createCreep([WORK,WORK,WORK,WORK,WORK,MOVE], null, {role: 'energyminer', startroom: spawns[spawn].room.name});
+                    if (extminers.length < extminerscount && spawns[spawn].room.energyAvailable > 1000 && !spawns[spawn].spawning) {
+                        var newName = spawns[spawn].createCreep([WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE], null, { role: 'extminer', startroom: spawns[spawn].room.name });
+                        console.log(spawns[spawn].name + " is spawning extminer")
                         return;
-                    } else if (energyminers.length < energyminerscount && spawns[spawn].room.energyAvailable > 250 && extensioncount < 5) {
-                        var newName = spawns[spawn].createCreep([WORK,WORK,MOVE], null, {role: 'energyminer', startroom: spawns[spawn].room.name});
-                        return;
-                    }
-
-                    if (haulers.length < haulerscount && spawns[spawn].room.energyAvailable > 600) {
-                        var newName = spawns[spawn].createCreep([CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE], null, {role: 'hauler', startroom: spawns[spawn].room.name});
-                        return;
-                    } else if (haulers.length < haulerscount && spawns[spawn].room.energyAvailable > 300) {
-                        var newName = spawns[spawn].createCreep([CARRY,CARRY,CARRY,CARRY,CARRY,MOVE], null, {role: 'hauler', startroom: spawns[spawn].room.name});
+                    } else if (extminers.length < extminerscount && spawns[spawn].room.energyAvailable > 500 && !spawns[spawn].spawning) {
+                        var newName = spawns[spawn].createCreep([MOVE, WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY], null, { role: 'extminer', startroom: spawns[spawn].room.name });
+                        console.log(spawns[spawn].name + " is spawning extminer")
                         return;
                     }
 
-                    if (builders.length < builderscount && spawns[spawn].room.energyAvailable > 450) {
-                        var newName = spawns[spawn].createCreep([WORK,WORK,CARRY,CARRY,CARRY,CARRY,MOVE], null, {role: 'builder', startroom: spawns[spawn].room.name});
+                    if (energyminers.length < energyminerscount && spawns[spawn].room.energyAvailable > 550 && !spawns[spawn].spawning) {
+                        var newName = spawns[spawn].createCreep([WORK, WORK, WORK, WORK, WORK, MOVE], null, { role: 'energyminer', startroom: spawns[spawn].room.name });
+                        console.log(spawns[spawn].name + " is spawning energyminer")
                         return;
-                    } else if (builders.length < builderscount && spawns[spawn].room.energyAvailable > 200  && extensioncount < 5) {
-                        var newName = spawns[spawn].createCreep([WORK,CARRY,MOVE], null, {role: 'builder', startroom: spawns[spawn].room.name});
-                        return;
-                    }
-                
-                    if (fillers.length < fillerscount && spawns[spawn].room.energyAvailable > 400) {
-                        var newName = spawns[spawn].createCreep([CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE], null, {role: 'filler', startroom: spawns[spawn].room.name});
+                    } else if (energyminers.length < energyminerscount && spawns[spawn].room.energyAvailable > 250 && extensioncount < 5 && !spawns[spawn].spawning) {
+                        var newName = spawns[spawn].createCreep([WORK, WORK, MOVE], null, { role: 'energyminer', startroom: spawns[spawn].room.name });
+                        console.log(spawns[spawn].name + " is spawning energyminer")
                         return;
                     }
-                
-                    if (upgraders.length < upgraderscount && spawns[spawn].room.energyAvailable > 1000) {
-                        var newName = spawns[spawn].createCreep([WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE], null, {role: 'upgrader', startroom: spawns[spawn].room.name});
+
+                    if (haulers.length < haulerscount && spawns[spawn].room.energyAvailable > 600 && !spawns[spawn].spawning) {
+                        var newName = spawns[spawn].createCreep([CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE], null, { role: 'hauler', startroom: spawns[spawn].room.name });
+                        console.log(spawns[spawn].name + " is spawning hauler")
                         return;
-                    } else if (upgraders.length < upgraderscount && spawns[spawn].room.energyAvailable > 650) {
-                        var newName = spawns[spawn].createCreep([WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE], null, {role: 'upgrader', startroom: spawns[spawn].room.name});
+                    } else if (haulers.length < haulerscount && spawns[spawn].room.energyAvailable > 300 && !spawns[spawn].spawning) {
+                        var newName = spawns[spawn].createCreep([CARRY, CARRY, CARRY, CARRY, CARRY, MOVE], null, { role: 'hauler', startroom: spawns[spawn].room.name });
+                        console.log(spawns[spawn].name + " is spawning hauler")
                         return;
-                    } else if (upgraders.length < upgraderscount && spawns[spawn].room.energyAvailable > 450) {
-                        var newName = spawns[spawn].createCreep([WORK,WORK,WORK,CARRY,CARRY,MOVE], null, {role: 'upgrader', startroom: spawns[spawn].room.name});
+                    }
+
+                    if (builders.length < builderscount && spawns[spawn].room.energyAvailable > 450 && !spawns[spawn].spawning) {
+                        var newName = spawns[spawn].createCreep([WORK, WORK, CARRY, CARRY, CARRY, CARRY, MOVE], null, { role: 'builder', startroom: spawns[spawn].room.name });
+                        console.log(spawns[spawn].name + " is spawning builder")
                         return;
-                    } else if (upgraders.length < upgraderscount && spawns[spawn].room.energyAvailable > 200 && extensioncount < 5) {
-                        var newName = spawns[spawn].createCreep([WORK,CARRY,MOVE], null, {role: 'upgrader', startroom: spawns[spawn].room.name});
+                    } else if (builders.length < builderscount && spawns[spawn].room.energyAvailable > 200 && extensioncount < 5 && !spawns[spawn].spawning) {
+                        var newName = spawns[spawn].createCreep([WORK, CARRY, MOVE], null, { role: 'builder', startroom: spawns[spawn].room.name });
+                        console.log(spawns[spawn].name + " is spawning builder")
+                        return;
+                    }
+
+                    if (fillers.length < fillerscount && spawns[spawn].room.energyAvailable > 400 && !spawns[spawn].spawning) {
+                        var newName = spawns[spawn].createCreep([CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE], null, { role: 'filler', startroom: spawns[spawn].room.name });
+                        console.log(spawns[spawn].name + " is spawning filler")
+                        return;
+                    }
+
+                    if (upgraders.length < upgraderscount && spawns[spawn].room.energyAvailable > 1000 && !spawns[spawn].spawning) {
+                        var newName = spawns[spawn].createCreep([WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE], null, { role: 'upgrader', startroom: spawns[spawn].room.name });
+                        console.log(spawns[spawn].name + " is spawning upgrader")
+                        return;
+                    } else if (upgraders.length < upgraderscount && spawns[spawn].room.energyAvailable > 650 && !spawns[spawn].spawning) {
+                        var newName = spawns[spawn].createCreep([WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE], null, { role: 'upgrader', startroom: spawns[spawn].room.name });
+                        console.log(spawns[spawn].name + " is spawning upgrader")
+                        return;
+                    } else if (upgraders.length < upgraderscount && spawns[spawn].room.energyAvailable > 450 && !spawns[spawn].spawning) {
+                        var newName = spawns[spawn].createCreep([WORK, WORK, WORK, CARRY, CARRY, MOVE], null, { role: 'upgrader', startroom: spawns[spawn].room.name });
+                        console.log(spawns[spawn].name + " is spawning upgrader")
+                        return;
+                    } else if (upgraders.length < upgraderscount && spawns[spawn].room.energyAvailable > 200 && extensioncount < 5 && !spawns[spawn].spawning) {
+                        var newName = spawns[spawn].createCreep([WORK, CARRY, MOVE], null, { role: 'upgrader', startroom: spawns[spawn].room.name });
+                        console.log(spawns[spawn].name + " is spawning upgrader")
                         return;
                     }
 
                     if (guards.length < guardscount && spawns[spawn].room.energyAvailable > 750) {
-                        var newName = spawns[spawn].createCreep([TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK], null, {role: 'guard', startroom: spawns[spawn].room.name});
-                    } else if (guards.length < guardscount && spawns[spawn].room.energyAvailable > 270) {
-                        var newName = spawns[spawn].createCreep([TOUGH,MOVE,ATTACK,MOVE,ATTACK], null, {role: 'guard', startroom: spawns[spawn].room.name});
-                    }
-                
-                    if (healers.length < healerscount && (spawns[spawn].room.energyAvailable > 600)) {
-                        var newName = spawns[spawn].createCreep([TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,HEAL,HEAL], null, {role: 'healer', startroom: spawns[spawn].room.name});
+                        var newName = spawns[spawn].createCreep([TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, MOVE, MOVE, MOVE, MOVE, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK], null, { role: 'guard', startroom: spawns[spawn].room.name } && !spawns[spawn].spawning);
+                        console.log(spawns[spawn].name + " is spawning guard")
                         return;
-                    } else if (healers.length < healerscount && (spawns[spawn].room.energyAvailable > 300)) {
-                        var newName = spawns[spawn].createCreep([HEAL,MOVE], null, {role: 'healer', startroom: spawns[spawn].room.name});
+                    } else if (guards.length < guardscount && spawns[spawn].room.energyAvailable > 270 && !spawns[spawn].spawning) {
+                        var newName = spawns[spawn].createCreep([TOUGH, MOVE, ATTACK, MOVE, ATTACK], null, { role: 'guard', startroom: spawns[spawn].room.name });
+                        console.log(spawns[spawn].name + " is spawning guard")
                         return;
                     }
 
-                    if (repairmen.length < repaircount && spawns[spawn].room.energyAvailable > 350) {
-                        var newName = spawns[spawn].createCreep([WORK,WORK,CARRY,CARRY,MOVE], null, {role: 'repair', startroom: spawns[spawn].room.name});
+                    if (healers.length < healerscount && (spawns[spawn].room.energyAvailable > 600) && !spawns[spawn].spawning) {
+                        var newName = spawns[spawn].createCreep([TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, MOVE, HEAL, HEAL], null, { role: 'healer', startroom: spawns[spawn].room.name });
+                        console.log(spawns[spawn].name + " is spawning healer")
+                        return;
+                    } else if (healers.length < healerscount && (spawns[spawn].room.energyAvailable > 300) && !spawns[spawn].spawning) {
+                        var newName = spawns[spawn].createCreep([HEAL, MOVE], null, { role: 'healer', startroom: spawns[spawn].room.name });
+                        console.log(spawns[spawn].name + " is spawning healer")
                         return;
                     }
 
-                    if (towersuppliers.length < towersuppliercount && (spawns[spawn].room.energyAvailable > 200)) {
-                        var newName = spawns[spawn].createCreep([CARRY,CARRY,CARRY,MOVE], null, {role: 'towersupplier', startroom: spawns[spawn].room.name});
+                    if (repairmen.length < repaircount && spawns[spawn].room.energyAvailable > 350 && !spawns[spawn].spawning) {
+                        var newName = spawns[spawn].createCreep([WORK, WORK, CARRY, CARRY, MOVE], null, { role: 'repair', startroom: spawns[spawn].room.name });
+                        console.log(spawns[spawn].name + " is spawning repair")
                         return;
                     }
 
-                    if (scouts.length < scoutscount && (spawns[spawn].room.energyAvailable > 150)) {
-                        var newName = spawns[spawn].createCreep([MOVE,MOVE,MOVE], null, {role: 'scout', startroom: spawns[spawn].room.name});
+                    if (towersuppliers.length < towersuppliercount && (spawns[spawn].room.energyAvailable > 200) && !spawns[spawn].spawning) {
+                        var newName = spawns[spawn].createCreep([CARRY, CARRY, CARRY, MOVE], null, { role: 'towersupplier', startroom: spawns[spawn].room.name });
+                        console.log(spawns[spawn].name + " is spawning towersupplier")
+                        return;
+                    }
+
+                    if (scouts.length < scoutscount && (spawns[spawn].room.energyAvailable > 150) && !spawns[spawn].spawning) {
+                        var newName = spawns[spawn].createCreep([MOVE, MOVE, MOVE], null, { role: 'scout', startroom: spawns[spawn].room.name });
+                        console.log(spawns[spawn].name + " is spawning scout")
                         return;
                     }
                 }
             } else {
-            
+
             }
         }
     }
