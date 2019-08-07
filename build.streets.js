@@ -4,12 +4,16 @@ var buildStreets = {
             var room = Game.rooms[room_id]
             var spawns = room.find(FIND_MY_SPAWNS);
             var roomcontroller = room.controller;
-            
+
             if (!room.memory.streets) {
                 room.memory.streets = {built: false};
             };
             
             if (room.memory.streets.built == true) {
+                return;
+            }
+
+            if (!spawns) {
                 return;
             }
             

@@ -33,7 +33,6 @@ var roleFiller = {
 
             if (containers.length > 0) {
                 var storedenergy = creep.pos.findClosestByPath(containers);
-                //console.log(storedenergy);
                 if (creep.withdraw(storedenergy, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                     creep.travelTo(storedenergy);
                 }

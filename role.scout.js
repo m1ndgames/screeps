@@ -10,9 +10,10 @@ var roleScout = {
                 if (scoutingstatus == false) {
                     var roomname = roomstatus;
                     console.log(creep.name + ": I will scout " + roomname);
-                    
+
                     creep.memory.scouting = roomname;
                     creeproom.memory.scouting[roomname] = true;
+                    return
                 }
             }
             

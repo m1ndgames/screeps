@@ -19,6 +19,7 @@ var spawnWorkers = {
                 var scouts = _.filter(Game.creeps, (creep) => creep.memory.role == 'scout');
                 var claimers = _.filter(Game.creeps, (creep) => creep.memory.role == 'claimer');
 
+
                 builderscount = 0
                 // Spawn builders if needed
                 for (var room_id in Game.rooms) {
@@ -63,7 +64,9 @@ var spawnWorkers = {
                     }
                 }
 
-
+                // Count Sources in Room
+                var sourcecount = room.find(FIND_SOURCES).length;
+                var energyminerscount = sourcecount;
 
                 if (energyminers.length < 2) {
                     var energyminerscount = 2;
@@ -72,7 +75,6 @@ var spawnWorkers = {
                     var guardscount = 0;
                     var healerscount = 0;
                     var repaircount = 0;
-                    var builderscount = 0;
                     var upgraderscount = 0;
                     var towersuppliercount = 0;
                     var fillerscount = 0;
@@ -92,10 +94,6 @@ var spawnWorkers = {
                     var fillerscount = 0;
                     var extminerscount = 0;
                 }
-
-                // Count Sources in Room
-                var sourcecount = room.find(FIND_SOURCES).length;
-                var energyminerscount = sourcecount;
 
                 // Count Extensions in Room
                 var extensioncount = room.find(FIND_MY_STRUCTURES, {
@@ -142,8 +140,12 @@ var spawnWorkers = {
                     var haulerscount = 0;
                     var towersuppliercount = 0;
                     var fillerscount = 0;
+                    var builderscount = 0;
                 }
 
+                if (level == 2) {
+                    var builderscount = 2;
+                }
 
                 var spawns = Game.spawns;
 

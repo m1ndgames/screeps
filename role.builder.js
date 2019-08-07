@@ -40,7 +40,6 @@ var roleBuilder = {
                 if (!closestStructure) {
                     closestStructure = constructionsites[0];
                 }
-                console.log(closestStructure);
                 if(creep.build(closestStructure) == ERR_NOT_IN_RANGE) {
                     creep.travelTo(closestStructure);
                 }
