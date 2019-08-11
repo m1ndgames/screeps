@@ -83,7 +83,7 @@ module.exports.loop = function () {
 	var myroomcount = 0;
 	for(var room_id in Game.rooms) {
         var room = Game.rooms[room_id];
-        if (room.controller.my) {
+        if ((room.controller) && (room.controller.my)) {
         	myroomcount = myroomcount + 1
         }
     }

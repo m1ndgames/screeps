@@ -28,7 +28,7 @@ var spawnWorkers = {
                         var contructionsites = room.find(FIND_MY_CONSTRUCTION_SITES);
 
                         if (contructionsites.length > 0) {
-                            builderscount = 2;
+                            builderscount = 3;
                         }
                     }
                 }
@@ -141,6 +141,10 @@ var spawnWorkers = {
                     var towersuppliercount = 0;
                     var fillerscount = 0;
                     var builderscount = 0;
+                }
+
+                if (level < 3) {
+                    var scoutscount = 0;
                 }
 
                 if (level == 2) {

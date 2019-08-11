@@ -21,7 +21,7 @@ var manageBuilding = {
                 if (level == 3) {
                     require('build.extensions_lvl3').run(room);
                     require('build.tower_lvl3').run(room);
-                    require('build.streets').run(room);
+                    //require('build.streets').run(room);
                 }
             
                 if (level == 4) {
